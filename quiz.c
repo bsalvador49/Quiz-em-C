@@ -111,7 +111,7 @@ int main() {
         }
 
         // PASSO D: Fazer as perguntas pro jogador
-        printf("===============QUIZ DE C================\n");
+        
         
         
         for (int i = 0; i < 10; i++) {
