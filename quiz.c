@@ -1,26 +1,21 @@
 #include <stdio.h>
-#include <stdlib.h> // Para malloc, free, rand e system()
-#include <time.h>   // Para a semente do sorteio
+#include <stdlib.h> 
+#include <time.h>  
 
-// --- FUNÇÃO NOVA: LIMPEZA DE BUFFER ---
-// Essa função varre o teclado e joga fora qualquer letra extra digitada acidentalmente
 void limparBuffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
-// 1. A NOSSA CAIXA DE DADOS (Struct)
 typedef struct {
     char texto[150];
     char alternativas[3][50];
     char resposta_correta;
 } Pergunta;
 
-// 2. A FUNÇÃO QUE FAZ A PERGUNTA (Usando ponteiro '*')
 int fazerPergunta(Pergunta *p, int numero) {
     char resposta;
 
-    // Como usamos ponteiro, acessamos os dados com a setinha '->'
     printf("\n%d. %s\n", numero, p->texto);
     printf("a) %s\n", p->alternativas[0]);
     printf("b) %s\n", p->alternativas[1]);
@@ -29,24 +24,21 @@ int fazerPergunta(Pergunta *p, int numero) {
     printf("Sua resposta: ");
     scanf(" %c", &resposta);
     
-    // CHAMAMOS A LIMPEZA AQUI: Se o usuário digitou "ab", limpa o "b" que sobrou!
     limparBuffer(); 
 
-    // Se acertou (maiúscula ou minúscula)
     if (resposta == p->resposta_correta || resposta == (p->resposta_correta - 32)) {
         printf("-> Acertou!\n");
-        return 1; // Retorna 1 ponto
+        return 1; 
     } else {
         printf("-> Errou! Era a letra '%c'.\n", p->resposta_correta);
-        return 0; // Retorna 0 pontos
+        return 0; 
     }
 }
 
 int main() {
-    srand(time(NULL)); // Liga o gerador de números aleatórios
+    srand(time(NULL)); 
     char quer_jogar_de_novo;
 
-    // 3. O BANCO DE PERGUNTAS (Agora com 30 questões!)
     Pergunta banco[30] = {
         {"O que significa a sigla 'RAM'?", {"Random Access Memory", "Read Access Memory", "Run All Memory"}, 'a'},
         {"Qual a funcao do comando 'printf'?", {"Ler dados", "Imprimir na tela", "Declarar variavel"}, 'b'},
@@ -80,14 +72,11 @@ int main() {
         {"Um ponteiro guarda o que?", {"Um endereco de memoria", "O valor de uma variavel", "Uma letra"}, 'a'}
     };
 
-    // O JOGO COMEÇA AQUI
     do {
         int acertos = 0;
 
-        // Limpa a tela no início da rodada (Comando para Windows)
         system("clear");
 
-        // PASSO A: O "Misturador Raiz"
         for (int i = 0; i < 100; i++) {
             int pos1 = rand() % 30; 
             int pos2 = rand() % 30; 
@@ -97,7 +86,6 @@ int main() {
             banco[pos2] = temporaria;
         }
 
-        // PASSO B: Alocação Dinâmica (O Malloc que o professor quer ver)
         Pergunta *quiz = (Pergunta *) malloc(10 * sizeof(Pergunta));
         
         if (quiz == NULL) {
@@ -105,12 +93,10 @@ int main() {
             return 1;
         }
 
-        // PASSO C: Pegar as 10 primeiras do banco misturado
         for (int i = 0; i < 10; i++) {
             quiz[i] = banco[i];
         }
 
-        // PASSO D: Fazer as perguntas pro jogador
         printf("===============QUIZ DE C================\n");
         
         
@@ -120,14 +106,11 @@ int main() {
 
         printf("\nFIM DE JOGO! Voce acertou %d de 10.\n", acertos);
 
-        // PASSO E: Limpar a bagunça (O Free)
         free(quiz);
 
-        // PASSO F: Repetir?
         printf("\nQuer tentar de novo? (s/n): ");
         scanf(" %c", &quer_jogar_de_novo);
-        
-        // CHAMAMOS A LIMPEZA AQUI TAMBÉM: Para garantir que o loop não quebre
+
         limparBuffer(); 
 
     } while (quer_jogar_de_novo == 's' || quer_jogar_de_novo == 'S');
